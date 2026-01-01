@@ -1,0 +1,267 @@
+{
+  "id": "b6fcadfd-fe13-4798-9673-dc38894702fa",
+  "revision": 0,
+  "last_node_id": 32,
+  "last_link_id": 30,
+  "nodes": [
+    {
+      "id": 31,
+      "type": "HYMotionTextEncode",
+      "pos": [
+        -2110.7527891329787,
+        -741.3687021355923
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "encoder",
+          "type": "HYMOTION_ENCODER",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "HYMOTION_CONDITIONING",
+          "type": "HYMOTION_CONDITIONING",
+          "links": [
+            29
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "visualbruno/ComfyUI-HY-Motion",
+        "ver": "fb01f61ac88e66ccbce6ef6010887e0aca060564",
+        "Node name for S&R": "HYMotionTextEncode",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "A person performs a deadlift, lifting a barbell from the ground",
+        true
+      ]
+    },
+    {
+      "id": 25,
+      "type": "HYMotionSampler",
+      "pos": [
+        -1641.0873435369328,
+        -803.9166989702189
+      ],
+      "size": [
+        295.494140625,
+        198
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "HYMOTION_MODEL",
+          "link": 22
+        },
+        {
+          "name": "conditioning",
+          "type": "HYMOTION_CONDITIONING",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "HYMOTION_MOTION",
+          "type": "HYMOTION_MOTION",
+          "links": [
+            24
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "visualbruno/ComfyUI-HY-Motion",
+        "ver": "fb01f61ac88e66ccbce6ef6010887e0aca060564",
+        "Node name for S&R": "HYMotionSampler",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        229529864266593,
+        "randomize",
+        5,
+        5,
+        50,
+        true
+      ]
+    },
+    {
+      "id": 26,
+      "type": "HYMotionVisualizer",
+      "pos": [
+        -1284.7894221638417,
+        -804.7088083887148
+      ],
+      "size": [
+        270,
+        102
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "motion",
+          "type": "HYMOTION_MOTION",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "fbx_path",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "fbx_name",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "aux_id": "visualbruno/ComfyUI-HY-Motion",
+        "ver": "fb01f61ac88e66ccbce6ef6010887e0aca060564",
+        "Node name for S&R": "HYMotionVisualizer",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "deadlift_motion",
+        true
+      ]
+    },
+    {
+      "id": 32,
+      "type": "HYMotionTextEncoderLoader",
+      "pos": [
+        -2603.1381352064786,
+        -740.4973164955803
+      ],
+      "size": [
+        357.17626105930356,
+        108.0022183944244
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "HYMOTION_ENCODER",
+          "type": "HYMOTION_ENCODER",
+          "links": [
+            28
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "visualbruno/ComfyUI-HY-Motion",
+        "ver": "fb01f61ac88e66ccbce6ef6010887e0aca060564",
+        "Node name for S&R": "HYMotionTextEncoderLoader",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "clip-vit-large-patch14",
+        "Qwen3-8B",
+        "int8"
+      ]
+    },
+    {
+      "id": 27,
+      "type": "HYMotionModelLoader",
+      "pos": [
+        -2077.6641434155554,
+        -893.3047922141864
+      ],
+      "size": [
+        350.5773284364777,
+        58.89102952379767
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "HYMOTION_MODEL",
+          "type": "HYMOTION_MODEL",
+          "links": [
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "visualbruno/ComfyUI-HY-Motion",
+        "ver": "fb01f61ac88e66ccbce6ef6010887e0aca060564",
+        "Node name for S&R": "HYMotionModelLoader",
+        "widget_ue_connectable": {}
+      },
+      "widgets_values": [
+        "HY-Motion-1.0"
+      ]
+    }
+  ],
+  "links": [
+    [
+      22,
+      27,
+      0,
+      25,
+      0,
+      "HYMOTION_MODEL"
+    ],
+    [
+      24,
+      25,
+      0,
+      26,
+      0,
+      "HYMOTION_MOTION"
+    ],
+    [
+      28,
+      32,
+      0,
+      31,
+      0,
+      "HYMOTION_ENCODER"
+    ],
+    [
+      29,
+      31,
+      0,
+      25,
+      1,
+      "HYMOTION_CONDITIONING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "workflowRendererVersion": "LG",
+    "ue_links": [],
+    "ds": {
+      "scale": 0.925629788160001,
+      "offset": [
+        2741.0667318019337,
+        1153.2271471497406
+      ]
+    },
+    "links_added_by_ue": [],
+    "frontendVersion": "1.35.9",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
