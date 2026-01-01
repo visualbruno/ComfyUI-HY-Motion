@@ -306,17 +306,18 @@ class HYMotionVisualizer:
             }
         }
 
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("fbx_path",)
+    RETURN_TYPES = ("STRING","STRING",)
+    RETURN_NAMES = ("fbx_path","fbx_name",)
     FUNCTION = "visualize"
     CATEGORY = "HYMotion"
+    OUTPUT_NODE = True
 
     def visualize(self, motion, output_name, export_fbx):
         from .hymotion.utils.visualize_mesh_web import save_visualization_data, generate_static_html_content
         import time
         
         ts = time.strftime("%Y%m%d_%H%M%S", time.localtime())
-        output_dir = os.path.join(os.getcwd(), "output", "comfy")
+        output_dir = folder_paths.output_directory
         os.makedirs(output_dir, exist_ok=True)
         
         # Use a sanitized file name for stability
@@ -346,7 +347,8 @@ class HYMotionVisualizer:
         # html_path = os.path.join(output_dir, base_filename + ".html")
         # with open(html_path, "w", encoding="utf-8") as f:
             # f.write(html_content)
-            
+        
+        fbx_name = ""
         fbx_path = ""
         if export_fbx:
             try:
@@ -354,7 +356,8 @@ class HYMotionVisualizer:
                 converter = SMPLH2WoodFBX()
                 smpl_data_list = save_data["smpl_data"]
                 smpl_data = smpl_data_list[0]
-                fbx_path = os.path.abspath(os.path.join(output_dir, f"{safe_name}_{ts}.fbx"))
+                fbx_name = f"{safe_name}_{ts}.fbx"
+                fbx_path = os.path.abspath(os.path.join(output_dir, fbx_name))
                 success = converter.convert_npz_to_fbx(smpl_data, fbx_path)
                 if not success:
                     print(f"Warning: FBX conversion failed for {fbx_path}")
@@ -366,7 +369,7 @@ class HYMotionVisualizer:
                 print(f"Warning: FBX export failed with error: {e}")
                 fbx_path = f"FBX export error: {e}"
         
-        return (fbx_path,)
+        return (fbx_path, fbx_name,)
 
 NODE_CLASS_MAPPINGS = {
     "HYMotionModelLoader": HYMotionModelLoader,
