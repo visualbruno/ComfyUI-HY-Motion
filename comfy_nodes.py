@@ -72,7 +72,7 @@ class HYMotionTextEncoderLoader:
             "required": {
                 "clip_name": ("STRING", {"default": "clip-vit-large-patch14"}),
                 "qwen_name": ("STRING", {"default": "Qwen3-8B"}),
-                "precision": (["fp16", "bf16", "fp32"], {"default": "bf16"}),
+                "precision": (["fp16", "bf16", "fp32", "int8", "int4"], {"default": "bf16"}),
             }
         }
 
@@ -82,6 +82,7 @@ class HYMotionTextEncoderLoader:
 
     def load_encoder(self, clip_name, qwen_name, precision):
         from .hymotion.network.text_encoders.text_encoder import HYTextModel
+        from transformers import BitsAndBytesConfig
         import comfy.model_management as mm
         
         # In this project, HYTextModel expects layouts to be pre-configured or paths provided.
@@ -101,16 +102,33 @@ class HYMotionTextEncoderLoader:
         text_encoder.SENTENCE_EMB_LAYOUT["clipl"]["module_path"] = clip_path
         text_encoder.LLM_ENCODER_LAYOUT["qwen3"]["module_path"] = qwen_path
         
+        llm_kwargs = {}              
         dtype = torch.float32
         if precision == "fp16":
             dtype = torch.float16
         elif precision == "bf16":
             dtype = torch.bfloat16
+        elif precision == "int8":
+            llm_kwargs["load_in_8bit"] = True
+            dtype = torch.float16 # Compute dtype
+        elif precision == "int4":
+            llm_kwargs["quantization_config"] = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.bfloat16,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True,
+            )
+            dtype = torch.bfloat16 # Compute dtype
             
-        encoder = HYTextModel(llm_type="qwen3", sentence_emb_type="clipl")
+        llm_kwargs["torch_dtype"] = dtype                                 
+        encoder = HYTextModel(llm_type="qwen3", sentence_emb_type="clipl", llm_kwargs=llm_kwargs)
         
         device = mm.get_torch_device()
-        encoder.to(device).to(dtype)
+        # Note: BitsAndBytes handles device placement during loading.
+        # But we still need to move the other parts (CLIP) to the device.
+        if precision not in ["int8", "int4"]:
+            encoder.to(device)
+            
         encoder.eval().requires_grad_(False)
         
         return (encoder,)

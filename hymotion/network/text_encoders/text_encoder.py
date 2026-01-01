@@ -55,6 +55,7 @@ class HYTextModel(nn.Module):
         sentence_emb_type: Optional[str] = "clipl",
         max_length_sentence_emb: int = 77,
         enable_llm_padding: bool = True,
+        llm_kwargs: Optional[dict] = None,
     ) -> None:
         super().__init__()
         self.text_encoder_type = "hy_text_model"
@@ -98,10 +99,17 @@ class HYTextModel(nn.Module):
                 LLM_ENCODER_LAYOUT[llm_type]["module_path"],
                 padding_side="right",
             )
+            
+            _llm_kwargs = {
+                "low_cpu_mem_usage": True,
+                "torch_dtype": torch.bfloat16,
+            }
+            if llm_kwargs is not None:
+                _llm_kwargs.update(llm_kwargs)
+                
             self.llm_text_encoder = LLM_ENCODER_LAYOUT[llm_type]["text_encoder_class"].from_pretrained(
                 LLM_ENCODER_LAYOUT[llm_type]["module_path"],
-                low_cpu_mem_usage=True,
-                torch_dtype=torch.bfloat16,
+                **_llm_kwargs,
             )
             self.llm_text_encoder = self.llm_text_encoder.eval().requires_grad_(False)
             self.ctxt_dim = self.llm_text_encoder.config.hidden_size
