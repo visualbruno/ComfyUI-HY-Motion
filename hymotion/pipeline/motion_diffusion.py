@@ -21,6 +21,8 @@ from ..utils.motion_process import smooth_rotation
 from ..utils.type_converter import get_module_device
 from .body_model import WoodenMesh
 
+import folder_paths
+
 
 def length_to_mask(lengths: Tensor, max_len: int) -> Tensor:
     """
@@ -128,6 +130,7 @@ class MotionGeneration(torch.nn.Module):
             torch.randn(1, 1, self._network_module_args.get("ctxt_input_dim", 4096))
         )
         # build buffer
+        mean_std_dir = os.path.join(folder_paths.base_path,"custom_nodes","ComfyUI-HY-Motion","stats")
         self.mean_std_dir = mean_std_dir
         self._parse_buffer(self.motion_type)
 
