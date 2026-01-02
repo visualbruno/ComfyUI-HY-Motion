@@ -21,7 +21,7 @@ HY-Motion/
   |──ckpts/
       ├── tencent/
       │   ├── HY-Motion-1.0/          # Contains config.yml and latest.ckpt
-      │   └── HY-Motion-1.0-Lite/     # Optional
+      │   └── HY-Motion-1.0-Lite/     # Contains config.yml and latest.ckpt
       ├── clip-vit-large-patch14/     # CLIP weights
       ├── Qwen3-8B/                   # Qwen text encoder weights
 ```
